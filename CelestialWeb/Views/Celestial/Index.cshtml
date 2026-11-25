@@ -1,0 +1,108 @@
+@model List<CelestialWeb.Models.CelestialBody>
+@{
+    ViewData["Title"] = "Summitt's Celestial Database";
+    var q = ViewBag.Query as CelestialWeb.Models.CelestialQuery ?? new CelestialWeb.Models.CelestialQuery();
+    var bodyTypes = ViewBag.BodyTypes as List<string> ?? new List<string>();
+    var total = (int)(ViewBag.Total ?? 0);
+}
+
+<h1>Summitt's Celestial Database</h1>
+<p>Query celestial bodies (magnitude, RA/DEC, type, name).</p>
+
+<form method="get" asp-action="Index" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <input class="form-control" name="Name" value="@q.Name" placeholder="Name contains..." />
+    </div>
+    <div class="col-md-2">
+        <select class="form-select" name="BodyType">
+            <option value="">All types</option>
+            @foreach (var t in bodyTypes)
+            {
+                <option value="@t" selected="@(q.BodyType == t)">@t</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-1">
+        <input class="form-control" name="MinMagnitude" value="@q.MinMagnitude" placeholder="Min mag" />
+    </div>
+    <div class="col-md-1">
+        <input class="form-control" name="MaxMagnitude" value="@q.MaxMagnitude" placeholder="Max mag" />
+    </div>
+    <div class="col-md-1">
+        <input class="form-control" name="MinRA" value="@q.MinRA" placeholder="Min RA" />
+    </div>
+    <div class="col-md-1">
+        <input class="form-control" name="MaxRA" value="@q.MaxRA" placeholder="Max RA" />
+    </div>
+    <div class="col-md-1">
+        <input class="form-control" name="MinDEC" value="@q.MinDEC" placeholder="Min DEC" />
+    </div>
+    <div class="col-md-1">
+        <input class="form-control" name="MaxDEC" value="@q.MaxDEC" placeholder="Max DEC" />
+    </div>
+    <div class="col-md-1">
+        <button class="btn btn-primary" type="submit">Search</button>
+    </div>
+</form>
+
+<p><strong>@total</strong> result(s). Page @q.Page</p>
+
+<table class="table table-striped table-sm">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Common</th>
+            <th>Type</th>
+            <th>Mag</th>
+            <th>RA (h)</th>
+            <th>RA (°)</th>
+            <th>DEC (°)</th>
+            <th>Dist (ly)</th>
+            <th>Constellation</th>
+            <th>Orbits</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var b in Model)
+        {
+            <tr>
+                <td>@b.Name</td>
+                <td>@b.CommonName</td>
+                <td>@b.BodyType</td>
+                <td>@(b.Magnitude?.ToString("F2"))</td>
+                <td>@(b.RA_Hours?.ToString("F4"))</td>
+                <td>@(b.RA_Degrees?.ToString("F4"))</td>
+                <td>@(b.DEC_Degrees?.ToString("F4"))</td>
+                <td>
+                    @if (b.Distance_LY.HasValue)
+                    {
+                        if (b.Distance_LY.Value < 1m)
+                        {
+                            @((b.Distance_LY.Value * 63241.077m).ToString("N2")) <text> AU</text>
+                        }
+                        else
+                        {
+                            @b.Distance_LY.Value.ToString("N0") <text> ly</text>
+                        }
+                    }
+                </td>
+                <td>@b.Constellation</td>
+                <td>@b.OrbitsPlanet</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (total > q.PageSize)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int p = 1; p <= (int)Math.Ceiling((double)total / q.PageSize); p++)
+            {
+                <li class="page-item @(p == q.Page ? "active" : "")">
+                    <a class="page-link" href="?Name=@q.Name&BodyType=@q.BodyType&MinMagnitude=@q.MinMagnitude&MaxMagnitude=@q.MaxMagnitude&MinRA=@q.MinRA&MaxRA=@q.MaxRA&MinDEC=@q.MinDEC&MaxDEC=@q.MaxDEC&Page=@p&PageSize=@q.PageSize">@p</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

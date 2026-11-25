@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "About Summitt's Celestial Database";
+}
+
+<div class="container mt-4">
+    <h1>About Summitt's Celestial Database</h1>
+    <p class="lead">
+        A SQL Server catalog of celestial bodies visible from Earth, including stars, planets,
+        moons, asteroids, comets, Messier objects, and more — each with Right Ascension (RA)
+        and Declination (DEC) coordinates.
+    </p>
+
+    <h2>Contents</h2>
+    <ul>
+        <li><strong>9,100+ stars</strong> from a bright-star catalog (with spectral types and distances)</li>
+        <li><strong>110 Messier objects</strong> (galaxies, nebulae, clusters)</li>
+        <li><strong>Planets &amp; dwarf planets</strong> of the Solar System</li>
+        <li><strong>21 moons</strong>, including major satellites</li>
+        <li><strong>Asteroids &amp; comets</strong></li>
+        <li><strong>88 constellations</strong> (full IAU set), with Northern-Hemisphere visibility flags</li>
+    </ul>
+
+    <h2>Query the catalog</h2>
+    <p>
+        Use the <a asp-controller="Celestial" asp-action="Index">Celestial Query</a> page to search by
+        name, body type, magnitude range, and RA/DEC coordinates.
+    </p>
+
+    <h2>Database</h2>
+    <p>
+        Server: <code>.</code> (local SQL Server)<br />
+        Database: <code>CelestialDatabase</code>
+    </p>
+</div>
